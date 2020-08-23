@@ -1,50 +1,60 @@
-// первое задание
 
-const firstRow = 'мама мыла раму';
-const secondRow = 'собака друг человека';
+const $btn = document.getElementById('btn-kick');
+const character = {
+    name: 'Pikachu',
+    defaultHP: 100,
+    damageHP: 100,
+    elHP: document.getElementById('health-character'),
+    elProgressbar: document.getElementById('progressbar-character'),
+};
 
-const a = 'а';
-let firstRowA = 0;
-let secondRowA = 0;
+const enemy = {
+    name: 'Charmander',
+    defaultHP: 100,
+    damageHP: 100,
+    elHP: document.getElementById('health-enemy'),
+    elProgressbar: document.getElementById('progressbar-enemy'),
+};
 
-for (let i = 0; i < firstRow.length;i++) {
-    if (firstRow[i] == a ){
-        firstRowA++
+$btn.addEventListener('click', function () {
+    console.log('Kick');
+
+    changeHP(random(20), character);
+    changeHP(random(20), enemy);
+});
+
+function init() {
+    console.log('Start Game!');
+    renderHPLife(character);
+    renderPhogressbarHP(enemy);
+}
+
+function renderHP(person) {
+    renderHPLife(person);
+    renderPhogressbarHP(person);
+}
+
+function renderHPLife(person) {
+    person.elHP.innerText = character.damageHP + ' / ' + character.defaultHP
+}
+
+function renderPhogressbarHP(person) {
+    person.elProgressbar.style.width = person.damageHP + '%';
+}
+
+function changeHP(count, person) {
+    if (person.damageHP < count) {
+        person.damageHP = 0;
+        alert('Бедный '+ person.name + ' проиграл бой!');
+        $btn.disabled = true;
+    } else {
+        person.damageHP -= count;
     }
+    renderHP(person)
 }
 
-for (let i = 0; i < secondRow.length;i++) {
-    if (secondRow[i] == a ){
-        secondRowA++
-    }
+function random(num) {
+    return Math.ceil(Math.random() * num);
 }
 
-if (firstRowA > secondRowA) {
-    console.log(firstRow);
-} else {
-    console.log(secondRow);
-}
-
-// второе задание
-
-const phoneNumber = '+71234567890'; // =>  '+7 (123) 456-78-90'
-
-function numberOfDigits(number) {
-    let wewe = number.length;
-    return wewe;
-}
-
-let changedNumber = '';
-for(let i = 0; i < phoneNumber.length; i++) {
-    changedNumber += phoneNumber.charAt(i);
-    if (i == 1) {
-        changedNumber += ' ('
-    } else if (i == 4) {
-        changedNumber += ') '
-          } else if (i == 7) {
-        changedNumber += '-';
-    } else if (i == 9) {
-        changedNumber += '-';
-    }
-}
-console.log(changedNumber);
+init();
