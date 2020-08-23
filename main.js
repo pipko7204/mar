@@ -18,7 +18,6 @@ const enemy = {
 
 $btn.addEventListener('click', function () {
     console.log('Kick');
-
     changeHP(random(20), character);
     changeHP(random(20), enemy);
 });
@@ -35,7 +34,7 @@ function renderHP(person) {
 }
 
 function renderHPLife(person) {
-    person.elHP.innerText = character.damageHP + ' / ' + character.defaultHP
+    person.elHP.innerText = person.damageHP + ' / ' + person.defaultHP
 }
 
 function renderPhogressbarHP(person) {
