@@ -39,13 +39,12 @@ function renderHP() {
 }
 
 function changeHP(count) {
-    if (this.damageHP < count) {
+    this.damageHP -= count;
+    if (this.damageHP <= 0) {
         this.damageHP = 0;
         alert('Бедный  '+ this.name + ' проиграл бой!');
         $btn.disabled = true;
-    } else {
-        this.damageHP -= count;
-    }
+        }
     renderHP.call(this);
 }
 
