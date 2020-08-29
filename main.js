@@ -44,7 +44,7 @@ function changeHP(count) {
     this.damageHP -= count;
 
     const log = this === enemy ? generateLog(this, character, count) : generateLog(this, enemy, count);
-    console.log(`раунд ${Math.ceil(i)}`, log); // это костыль или так и должно быть? я не придумал как можно иначе вытащить из этой функции "count".
+    console.log(`раунд ${Math.ceil(i)}`, log); 
 
     addLog(log, count)
 
