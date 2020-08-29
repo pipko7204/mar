@@ -52,6 +52,7 @@ function changeHP(count) {
         this.damageHP = 0;
         alert('Бедный  '+ this.name + ' проиграл бой!');
         $btn.disabled = true;
+        $superHit.disabled = true;
         }
         i+= 0.5;
     renderHP.call(this);
@@ -87,6 +88,14 @@ function addLog(log, count) {
     $p.innerText = `Раунд:${Math.ceil(i)} ${log} `;
     $logs.insertBefore($p, $logs.children[0])
 }
+
+const $superHit = document.getElementById('super-hit');
+
+$superHit.addEventListener('click', function () {
+    console.log('SUPER KICK');
+    character.changeHP(random(20)+ 10);
+    enemy.changeHP(random(20)+ 10);
+})
 
 init();
 
