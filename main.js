@@ -85,7 +85,7 @@ function addLog(log, count) {
     const $p = document.createElement('p');
 
     $p.innerText = `Раунд:${Math.ceil(i)} ${log} `;
-    $logs.insertBefore($p, $logs.children[0])
+    $logs.insertBefore($p, $logs.children[0]);
 }
 
 const $superHit = document.getElementById('super-hit');
@@ -94,40 +94,55 @@ $superHit.addEventListener('click', function () {
     console.log('SUPER KICK');
     character.change(random(20)+ 10);
     enemy.change(random(20)+ 10);
-})
+});
 
-function numberOfClicks(quantity) {
+const buttons = document.querySelector('.control').children;
+console.log(buttons);
+let buttonsObj = {};
+
+for (let i = 0; i < buttons.length; i++) {
+    buttonsObj[`button${i}`] = buttons[i]
+};
+console.log(buttonsObj);
+
+const quantityOfNormalHit = 5;
+const quantityOfSuperHit = 3;
+
+function numberOfClicks(quantity, quantityOfHit) {
     let clicks = 0;
     return function () {
         clicks++;
         console.log(`Щёлканий по кнопке: ${clicks}`);
         quantity--;
         console.log(`ударов этого типа осталось: ${quantity}`);
+        if(clicks === quantityOfHit) {
+            quantityOfHit === quantityOfNormalHit ? buttonsObj.button0.disabled = true : quantityOfHit === quantityOfSuperHit ?buttonsObj.button1.disabled = true : alert('dfsf');
+        }
     }
 }
 
-const quantityOfNormalHit = 5;
-const quantityOfSuperHit = 3;
+console.log(buttonsObj.button0);
 
-const firstBtn = numberOfClicks(quantityOfNormalHit);
-const secondBtn = numberOfClicks(quantityOfSuperHit);
 
-let j = 0;
+const firstBtn = numberOfClicks(quantityOfNormalHit, quantityOfNormalHit);
+const secondBtn = numberOfClicks(quantityOfSuperHit, quantityOfSuperHit);
+
+//let j = 0;
 $btn.addEventListener('click', function () {
     firstBtn();
-    j++;
+    /*j++;
     if( j === quantityOfNormalHit) {
         this.disabled = true;
-    }
+    }*/
 });
 
-let k = 0;
+//let k = 0;
 $superHit.addEventListener('click', function () {
     secondBtn();
-    k++;
+   /* k++;
     if (k === quantityOfSuperHit){
         this.disabled = true;
-    }
+    }*/
 });
 
 // я не совсем понимаю для чего нужна деструктуризация, объясни, пожалуйста. или это вопрос к гуглу?
