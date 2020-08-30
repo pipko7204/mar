@@ -106,20 +106,35 @@ function numberOfClicks(quantity) {
     }
 }
 
-const firstBtn = numberOfClicks(5);
-const secondBtn = numberOfClicks(3);
+const quantityOfNormalHit = 5;
+const quantityOfSuperHit = 3;
 
+const firstBtn = numberOfClicks(quantityOfNormalHit);
+const secondBtn = numberOfClicks(quantityOfSuperHit);
+
+let j = 0;
 $btn.addEventListener('click', function () {
-  
     firstBtn();
-    console.log();
+    j++;
+    if( j === quantityOfNormalHit) {
+        this.disabled = true;
+    }
 });
 
+let k = 0;
 $superHit.addEventListener('click', function () {
     secondBtn();
+    k++;
+    if (k === quantityOfSuperHit){
+        this.disabled = true;
+    }
+});
 
-    console.log();
-})
+// я не совсем понимаю для чего нужна деструктуризация, объясни, пожалуйста. или это вопрос к гуглу?
+
+//я так же не смог придумать как замыканием задизейблить кнопки. Если в самом замыкании вывести 'this' то
+//покажет объект 'window'. подскажи как достать из замыкания внутренние переменные. в моём случае 'clicks' и 'quanyity'.
+//Заранее спасибо!)
 
 init();
 
