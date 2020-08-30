@@ -6,8 +6,8 @@ const character = {
     damageHP: 100,
     elHP: document.getElementById('health-character'),
     elProgressbar: document.getElementById('progressbar-character'),
-    renderHP: renderHP,
-    changeHP: changeHP,
+    render: renderHP,
+    change: changeHP,
 };
 
 const enemy = {
@@ -16,21 +16,24 @@ const enemy = {
     damageHP: 100,
     elHP: document.getElementById('health-enemy'),
     elProgressbar: document.getElementById('progressbar-enemy'),
-    renderHP: renderHP,
-    changeHP: changeHP,
+    render: renderHP,
+    change: changeHP,
 };
+
+const {name, defaultHP, damageHP, elHP, elProgressbar, render,change} = character;
+const {nameEnemy, defaultHPEnemy, damageHPEnemy, elHPEnemy, elProgressbarEnemy, renderEnemy,changeEnemy} = enemy;
 
 $btn.addEventListener('click', function () {
     console.log('Kick');
-    character.changeHP(random(20));
-    enemy.changeHP(random(20));
+    character.change(random(20));
+    enemy.change(random(20));
 
 });
 
 function init() {
     console.log('Start Game!');
-    character.renderHP();
-    enemy.renderHP();
+    character.render();
+    enemy.render();
 }
 
 function renderHP() {
@@ -44,7 +47,7 @@ function changeHP(count) {
     this.damageHP -= count;
 
     const log = this === enemy ? generateLog(this, character, count) : generateLog(this, enemy, count);
-    console.log(`раунд ${Math.ceil(i)}`, log); 
+    console.log(`раунд ${Math.ceil(i)}`, log);
 
     addLog(log, count)
 
@@ -58,9 +61,7 @@ function changeHP(count) {
     renderHP.call(this);
 }
 
-function random(num) {
-    return Math.ceil(Math.random() * num);
-};
+const random = (num) => Math.ceil(Math.random() * num);
 
 function generateLog(firstPerson, secondPerson, count) {
     const logs = [
@@ -83,8 +84,6 @@ const $logs = document.querySelector('#logs');
 function addLog(log, count) {
     const $p = document.createElement('p');
 
-    console.log($p);
-
     $p.innerText = `Раунд:${Math.ceil(i)} ${log} `;
     $logs.insertBefore($p, $logs.children[0])
 }
@@ -93,8 +92,32 @@ const $superHit = document.getElementById('super-hit');
 
 $superHit.addEventListener('click', function () {
     console.log('SUPER KICK');
-    character.changeHP(random(20)+ 10);
-    enemy.changeHP(random(20)+ 10);
+    character.change(random(20)+ 10);
+    enemy.change(random(20)+ 10);
+})
+
+function numberOfClicks(quantity) {
+    let clicks = 0;
+    return function () {
+        clicks++;
+        console.log(`Щёлканий по кнопке: ${clicks}`);
+        quantity--;
+        console.log(`ударов этого типа осталось: ${quantity}`);
+    }
+}
+
+const firstBtn = numberOfClicks(5);
+const secondBtn = numberOfClicks(3);
+
+$btn.addEventListener('click', function () {
+    firstBtn(5);
+    console.log();
+});
+
+$superHit.addEventListener('click', function () {
+    secondBtn(3);
+
+    console.log();
 })
 
 init();
