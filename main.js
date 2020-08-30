@@ -110,12 +110,13 @@ const firstBtn = numberOfClicks(5);
 const secondBtn = numberOfClicks(3);
 
 $btn.addEventListener('click', function () {
-    firstBtn(5);
+  
+    firstBtn();
     console.log();
 });
 
 $superHit.addEventListener('click', function () {
-    secondBtn(3);
+    secondBtn();
 
     console.log();
 })
