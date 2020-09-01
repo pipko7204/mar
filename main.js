@@ -1,5 +1,7 @@
 
 const $btn = document.getElementById('btn-kick');
+const $superHit = document.getElementById('super-hit');
+
 const character = {
     name: 'Pikachu',
     defaultHP: 100,
@@ -20,11 +22,49 @@ const enemy = {
     changeHP: changeHP,
 };
 
-$btn.addEventListener('click', function () {
-    console.log('Kick');
-    character.changeHP(random(20));
-    enemy.changeHP(random(20));
+const btnCountJolt = countBtn( 5, $btn);
+const btnCountJolt2 = countBtn2(3, $superHit);
 
+
+function countBtn(count = 3, el) {
+    const innerText = el.innerText;
+    el.innerText = `${innerText} ${count}`;
+    return function () {
+        count--;
+        if (count === 0) {
+            el.disabled = true;
+        }
+        el.innerText = `${innerText} ${count}`;
+        return count;
+    }
+}
+
+function countBtn2(count = 3, el) {
+    const innerText = el.innerText;
+    el.innerText = `${innerText} ${count}`;
+    return function () {
+        count--;
+        if (count === 0) {
+            el.disabled = true;
+        }
+        el.innerText = `${innerText} ${count}`;
+        return count;
+    }
+}
+
+$btn.addEventListener('click', function () {
+    btnCountJolt();
+    console.log('Kick');
+    character.changeHP(random(20 ));
+    enemy.changeHP(random(20 ));
+
+});
+
+$superHit.addEventListener('click', function () {
+    btnCountJolt2();
+    console.log('SUPER KICK');
+    character.changeHP(random(30, 10));
+    enemy.changeHP(random(30, 10));
 });
 
 function init() {
@@ -44,6 +84,7 @@ function changeHP(count) {
     this.damageHP -= count;
 
     const log = this === enemy ? generateLog(this, character, count) : generateLog(this, enemy, count);
+    console.log(this);
     console.log(`раунд ${Math.ceil(i)}`, log); 
 
     addLog(log, count)
@@ -58,8 +99,9 @@ function changeHP(count) {
     renderHP.call(this);
 }
 
-function random(num) {
-    return Math.ceil(Math.random() * num);
+function random(max, min = 0) {
+    const num = max - min;
+    return Math.ceil(Math.random() * num) + min;
 };
 
 function generateLog(firstPerson, secondPerson, count) {
@@ -75,27 +117,20 @@ function generateLog(firstPerson, secondPerson, count) {
         `${firstPerson.name} расстроился, как вдруг, неожиданно ${secondPerson.name} случайно влепил стопой в живот соперника.-${count}HP [${firstPerson.damageHP}/100]`,
         `${firstPerson.name} пытался что-то сказать, но вдруг, неожиданно ${secondPerson.name} со скуки, разбил бровь сопернику.-${count}HP [${firstPerson.damageHP}/100]`
     ];
-    return logs[random(logs.length)-1];
+    return logs[random(logs.length)-1, 0];
 }
 
 const $logs = document.querySelector('#logs');
 
 function addLog(log, count) {
     const $p = document.createElement('p');
-
-    console.log($p);
-
     $p.innerText = `Раунд:${Math.ceil(i)} ${log} `;
     $logs.insertBefore($p, $logs.children[0])
 }
 
-const $superHit = document.getElementById('super-hit');
 
-$superHit.addEventListener('click', function () {
-    console.log('SUPER KICK');
-    character.changeHP(random(20)+ 10);
-    enemy.changeHP(random(20)+ 10);
-})
+
+
 
 init();
 
