@@ -40,9 +40,18 @@ body {
     position: relative;
     margin: 20px;
     display: flex;
+    flex-wrap: wrap;
     justify-content: center;
     align-items: center;
 }
+
+
+.control .button {
+    margin: auto;
+    width: 150px;
+    height: 100px;
+}
+
 
 .playground {
     max-width: 1024px;

@@ -1,25 +1,126 @@
-import random from "./utils.js"
+import random from "./utils.js";
 import Pokemon from "./pokemon.js";
+import { pokemons } from "./pokemons.js";
 
-const player1 = new Pokemon({
-    name: 'Pikachu',
-    hp: '500',
-    selectors: 'character',
-    type: 'electric',
-});
-const player2 = new Pokemon({
-    name: 'Charmander',
-    hp: '450',
-    selectors: 'enemy',
-    type: 'fire',
-});
+let startButton = document.getElementById('start');
+
+startButton.addEventListener('click', function () {
+
+    let attackButtons = document.querySelectorAll('.control .button');
+    attackButtons.forEach($item => $item.remove());
+
+    let chosePokemon = prompt(`Выберите себе покемона, указав его номер, или введите "0" для случайного выбора
+        №1 Pikachu
+        №2 Charmander 
+        №3 Bulbasaur 
+        №4 Squirtle 
+        №5 Pidgey 
+        №6 Mew`, 0);
+
+    /*if ()*/
+    let initPokemon = function (pokemon) {
+        let selectedPokemon = chosePokemon == 0 ? pokemons[random(5, 0)] : pokemons[chosePokemon - 1];
+        let player1Img = document.getElementById(`player1-img`);
+        player1Img.src = selectedPokemon.img;
+        let player1Name = document.getElementById(`name-player1`);
+        player1Name.innerText = selectedPokemon.name;
+        return selectedPokemon;
+    }
+
+    let selectedPokemon = initPokemon(chosePokemon)
+
+    const character = pokemons.find(item => item.name === selectedPokemon.name);
+
+    let player1 = new Pokemon({
+        ...character,
+        selectors: 'player1',
+    });
 
 
-const $btn = document.getElementById('btn-kick');
-const $superHit = document.getElementById('super-hit');
+    let chosePokemonEnemy = prompt(`Выберите покемона противника, указав его номер, или введите "0" для случайного выбора
+        №1 Pikachu
+        №2 Charmander 
+        №3 Bulbasaur 
+        №4 Squirtle 
+        №5 Pidgey 
+        №6 Mew`, 0);
 
-const btnCountJolt = countBtn( 10, $btn);
-const btnCountJolt2 = countBtn2(3, $superHit);
+    let initPokemonEnemy = function (pokemon) {
+        let selectedPokemon = chosePokemonEnemy == 0 ? pokemons[random(5, 0)] : pokemons[chosePokemonEnemy -1];
+        let player2Img = document.getElementById(`player2-img`);
+        player2Img.src = selectedPokemon.img;
+        let player2Name = document.getElementById(`name-player2`);
+        player2Name.innerText = selectedPokemon.name;
+        return selectedPokemon;
+    }
+
+    let selectedPokemonEnemy = initPokemonEnemy(chosePokemonEnemy -1 );
+    console.log(selectedPokemonEnemy);
+
+let createPokemonEnemy = function(pokemon) {
+    let enemy = pokemons.find(item => item.name === selectedPokemonEnemy.name);
+    let enemyPokemon = new Pokemon({
+        ...enemy,
+        selectors: 'player2',
+    });
+    return enemyPokemon
+}
+    let player2 = createPokemonEnemy(selectedPokemonEnemy)
+console.log(player2);
+    const {attacks: [firstAttack]} = selectedPokemonEnemy;
+
+    const $control = document.querySelector('.control');
+    player1.attacks.forEach(item => {
+        const $btn = document.createElement('button');
+        $btn.classList.add('button');
+        $btn.innerText = item.name;
+        const btnCount = countBtn( item.maxCount, $btn);
+
+        $btn.addEventListener('click', () => {
+            console.log('click button', $btn.innerText);
+            btnCount();
+            player2.changeHP(random(item.maxDamage, item.minDamage), function (count) {
+                console.log(generateLog(player1, player2, count));
+            });
+            player1.changeHP(random(firstAttack.maxDamage, firstAttack.minDamage), function (count) {
+                console.log(generateLog(player2, player1, count));
+            });
+            if(player2.hp.current === 0) {
+                let chosePokemonEnemy1 = prompt(`Бой завершен! Выберите следующего противника, указав его номер, или введите "0" для случайного выбора
+        №1 Pikachu
+        №2 Charmander 
+        №3 Bulbasaur 
+        №4 Squirtle 
+        №5 Pidgey 
+        №6 Mew`, 0);
+                selectedPokemonEnemy = initPokemonEnemy(chosePokemonEnemy1);
+                player2.hp.current = player2.hp.total
+                player2.renderHP()
+
+            } else if (player1.hp.current === 0){
+                for (let i = 0; i < $control.children.length; i++) {
+                  $control.children[i].disabled = true;
+              };
+                alert('Бой завершен! Ты проиграл, но знай что ты сражался достойно(отстойно) =|. Можешь попробовать еще раз.')
+            }
+            console.log($btn);
+
+        });
+
+        $control.appendChild($btn);
+    });
+    function init() {
+        console.log('Start Game!');
+        player1.renderHP();
+        player2.renderHP();
+    }
+    init();
+    console.log(player1);
+    console.log(player2);
+})
+
+
+
 
 function countBtn(count = 3, el) {
     const innerText = el.innerText;
@@ -34,20 +135,8 @@ function countBtn(count = 3, el) {
     }
 }
 
-function countBtn2(count = 3, el) {
-    const innerText = el.innerText;
-    el.innerText = `${innerText} (${count})`;
-    return function () {
-        count--;
-        if (count === 0) {
-            el.disabled = true;
-        }
-        el.innerText = `${innerText} (${count})`;
-        return count;
-    }
-}
 
-$btn.addEventListener('click', function () {
+/*$btn.addEventListener('click', function () {
     btnCountJolt();
     console.log('Kick');
     player1.changeHP(random(50, 15),function (count) {
@@ -61,29 +150,11 @@ $btn.addEventListener('click', function () {
         $superHit.disabled = true;
         alert('Бой завершён!');
     }
-});
+});*/
 
-$superHit.addEventListener('click', function () {
-    btnCountJolt2();
-    console.log('SUPER KICK');
-    player1.changeHP(random(120, 50),function (count) {
-        console.log(generateLog(player1, player2, count));
-    });
-    player2.changeHP(random(120, 50),function (count) {
-        console.log(generateLog(player2, player1, count));
-    });
-    if(player1.hp.current === 0 || player2.hp.current === 0) {
-        $btn.disabled = true;
-        $superHit.disabled = true;
-        alert('Бой завершён!');
-    }
-});
 
-function init() {
-    console.log('Start Game!');
-    player1.renderHP();
-    player2.renderHP();
-}
+
+
 
 let i = 0.5;
 
@@ -103,7 +174,8 @@ function generateLog(firstPerson, secondPerson, count) {
     return logs[random(logs.length)-1, 0];
 }
 
+
 //const $logs = document.querySelector('#logs');
 
-init();
+
 
