@@ -6,7 +6,8 @@ let startButton = document.getElementById('start');
 class Game {
     getPokemons = async () => {
         const responce = await fetch('https://reactmarathon-api.netlify.app/api/pokemons');
-        const body =await responce.json();
+        const body = await responce.json();
+        console.log(body);
         return body
     };
 
@@ -20,111 +21,130 @@ class Game {
             let attackButtons = document.querySelectorAll('.control .button');
             attackButtons.forEach($item => $item.remove());
 
-            let chosePokemon = prompt(`Выберите себе покемона, указав его номер, или введите "0" для случайного выбора
-        №1 Pikachu
-        №2 Charmander 
-        №3 Bulbasaur 
-        №4 Squirtle 
-        №5 Pidgey 
-        №6 Mew`, 0);
 
-            let initPokemon = function (pokemon) {
-                let selectedPokemon = chosePokemon == 0 ? pokemons[random(5, 0)] : pokemons[chosePokemon - 1];
-                let player1Img = document.getElementById(`player1-img`);
-                player1Img.src = selectedPokemon.img;
-                let player1Name = document.getElementById(`name-player1`);
-                player1Name.innerText = selectedPokemon.name;
-                return selectedPokemon;
-            }
+            let chosePokemon = function (player) {
 
-            let selectedPokemon = initPokemon(chosePokemon)
+             return  prompt(`Выберите ${player} покемона, указав его имя, или введите "0" для случайного выбора
+        №1 ${pokemons[0].name}
+        №2 ${pokemons[1].name}
+        №3 ${pokemons[2].name}
+        №4 ${pokemons[3].name}
+        №5 ${pokemons[4].name}
+        №6 ${pokemons[5].name}
+        №7 ${pokemons[6].name}`, 0);
+            };
+            async function selectPokemonRandom() {
+                const responce = await fetch('https://reactmarathon-api.netlify.app/api/pokemons?random=true');
+                const body = await responce.json();
+                console.log(body);
+                return body
+            };
+            async function selectPokemon(pokemon) {
+                const responce = await fetch(`https://reactmarathon-api.netlify.app/api/pokemons?name=${pokemon}`);
+                const body = await responce.json();
+                console.log(body);
+                return body
+            };
 
-            const character = pokemons.find(item => item.name === selectedPokemon.name);
 
-            let player1 = new Pokemon({
-                ...character,
-                selectors: 'player1',
-            });
+            async function initPokemon (pokemon, number) {
+                let selectedPokemon = pokemon == 0 ? await selectPokemonRandom() : await selectPokemon(pokemon);
+                console.log(selectedPokemon);
+                let playerImg = document.getElementById(`player${number}-img`);
+                playerImg.src = selectedPokemon.img;
+                let playerName = document.getElementById(`name-player${number}`);
+                playerName.innerText = selectedPokemon.name;
+                const player = new Pokemon({
+                    ...selectedPokemon,
+                    selectors: `player${number}`
+                })
+                return player;
+            };
+
+            /*let selectedPokemon = initPokemon(chosePokemon(),1)
+            const character = pokemons.find(item => item/!*.name*!/ === selectedPokemon/!*.name*!/);*/
 
 
-            let chosePokemonEnemy = prompt(`Выберите покемона противника, указав его номер, или введите "0" для случайного выбора
-        №1 Pikachu
-        №2 Charmander 
-        №3 Bulbasaur 
-        №4 Squirtle 
-        №5 Pidgey 
-        №6 Mew`, 0);
 
-            let initPokemonEnemy = function (pokemon) {
-                let selectedPokemon = chosePokemonEnemy == 0 ? pokemons[random(5, 0)] : pokemons[chosePokemonEnemy -1];
-                let player2Img = document.getElementById(`player2-img`);
-                player2Img.src = selectedPokemon.img;
-                let player2Name = document.getElementById(`name-player2`);
-                player2Name.innerText = selectedPokemon.name;
-                return selectedPokemon;
-            }
 
-            let selectedPokemonEnemy = initPokemonEnemy(chosePokemonEnemy -1 );
+            let helth1 = document.getElementById('progressbar-player1');
+            helth1.classList.remove('low', 'critical');
+
+/*
+
+            let selectedPokemonEnemy = initPokemon(chosePokemon('противнику'), 2);
 
             let createPokemonEnemy = function(pokemon) {
-                let enemy = pokemons.find(item => item.name === selectedPokemonEnemy.name);
+                let enemy = pokemons.find(item => item/!*.name*!/ === selectedPokemonEnemy/!*.name*!/);
                 let enemyPokemon = new Pokemon({
                     ...enemy,
                     selectors: 'player2',
                 });
                 return enemyPokemon
-            }
-            let player2 = createPokemonEnemy(selectedPokemonEnemy)
+            };
+
+            let player2 = createPokemonEnemy(selectedPokemonEnemy);
             const {attacks: [firstAttack]} = selectedPokemonEnemy;
+*/
+
+            const helth2 = document.getElementById('progressbar-player2');
+            helth2.classList.remove('low', 'critical')
 
             const $control = document.querySelector('.control');
-            player1.attacks.forEach(item => {
-                const $btn = document.createElement('button');
-                $btn.classList.add('button');
-                $btn.innerText = item.name;
-                const btnCount = countBtn( item.maxCount, $btn);
+async function addButtons() {
+    let player1 = await initPokemon(chosePokemon(), 1);
 
-                $btn.addEventListener('click', () => {
-                    console.log('click button', $btn.innerText);
-                    btnCount();
-                    player2.changeHP(random(item.maxDamage, item.minDamage), function (count) {
-                        console.log(generateLog(player1, player2, count));
-                    });
-                    player1.changeHP(random(firstAttack.maxDamage, firstAttack.minDamage), function (count) {
-                        console.log(generateLog(player2, player1, count));
-                    });
-                    if(player2.hp.current === 0) {
-                        let chosePokemonEnemy1 = prompt(`Бой завершен! Выберите следующего противника, указав его номер, или введите "0" для случайного выбора
-        №1 Pikachu
-        №2 Charmander 
-        №3 Bulbasaur 
-        №4 Squirtle 
-        №5 Pidgey 
-        №6 Mew`, 0);
-                        selectedPokemonEnemy = initPokemonEnemy(chosePokemonEnemy1);
-                        player2.hp.current = player2.hp.total
-                        player2.renderHP()
-                        const helth2 = document.getElementById('progressbar-player2');
-                        helth2.classList.remove('low', 'critical')
-                    } else if (player1.hp.current === 0){
-                        for (let i = 0; i < $control.children.length; i++) {
-                            $control.children[i].disabled = true;
-                        };
-                        let helth1 = document.getElementById('progressbar-player1');
-                        helth1.classList.remove('low', 'critical');
-                        alert('Бой завершен! Ты проиграл, но знай что ты сражался достойно(отстойно) =|. Но ты можешь попробовать еще раз.')
-                    }
+    let player2 = await initPokemon(chosePokemon(), 2);
+    const {attacks: [firstAttack]} = player2;
+    console.log(player1, player2);
 
+                player1.attacks.forEach(item => {
+                    const $btn = document.createElement('button');
+                    $btn.classList.add('button');
+                    $btn.innerText = item.name;
+                    const btnCount = countBtn(item.maxCount, $btn);
+
+                    $btn.addEventListener('click', () => {
+                        console.log('click button', $btn.innerText);
+                        btnCount();
+                        player2.changeHP(random(item.maxDamage, item.minDamage), function (count) {
+                            console.log(item);
+                            console.log(generateLog(player1, player2, count));
+                        });
+                        player1.changeHP(random(firstAttack.maxDamage, firstAttack.minDamage), function (count) {
+                            console.log(generateLog(player2, player1, count));
+                        });
+                        if (player2.hp.current === 0) {
+                            /*let chosePokemonEnemy1 = chosePokemon('противнику нового')*/
+                            player2 = initPokemon(chosePokemon('противнику нового'), 2);
+                            console.log('sdg ');
+                            player2.hp.current = player2.hp.total
+                            player2.renderHP()
+                            const helth2 = document.getElementById('progressbar-player2');
+                            helth2.classList.remove('low', 'critical')
+                        } else if (player1.hp.current === 0) {
+                            for (let i = 0; i < $control.children.length; i++) {
+                                $control.children[i].disabled = true;
+                            }
+                            ;
+                            alert('Бой завершен! Ты проиграл, но знай что ты сражался достойно(отстойно) =|. Но ты можешь попробовать еще раз.')
+                        }
+
+                    });
+
+                    $control.appendChild($btn);
                 });
+    function init() {
+        console.log('Start Game!');
+        player1.renderHP();
+        player2.renderHP();
+    }
+    init();
+        };
 
-                $control.appendChild($btn);
-            });
-            function init() {
-                console.log('Start Game!');
-                player1.renderHP();
-                player2.renderHP();
-            }
-            init();
+addButtons()
+
+
         })
 
 
