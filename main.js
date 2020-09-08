@@ -55,7 +55,6 @@ startButton.addEventListener('click', function () {
     }
 
     let selectedPokemonEnemy = initPokemonEnemy(chosePokemonEnemy -1 );
-    console.log(selectedPokemonEnemy);
 
 let createPokemonEnemy = function(pokemon) {
     let enemy = pokemons.find(item => item.name === selectedPokemonEnemy.name);
@@ -66,7 +65,6 @@ let createPokemonEnemy = function(pokemon) {
     return enemyPokemon
 }
     let player2 = createPokemonEnemy(selectedPokemonEnemy)
-console.log(player2);
     const {attacks: [firstAttack]} = selectedPokemonEnemy;
 
     const $control = document.querySelector('.control');
@@ -96,14 +94,14 @@ console.log(player2);
                 selectedPokemonEnemy = initPokemonEnemy(chosePokemonEnemy1);
                 player2.hp.current = player2.hp.total
                 player2.renderHP()
-
+                const helth2 = document.getElementById('progressbar-player2');
+                helth2.classList.remove('low', 'critical')
             } else if (player1.hp.current === 0){
                 for (let i = 0; i < $control.children.length; i++) {
                   $control.children[i].disabled = true;
               };
-                alert('Бой завершен! Ты проиграл, но знай что ты сражался достойно(отстойно) =|. Можешь попробовать еще раз.')
+                alert('Бой завершен! Ты проиграл, но знай что ты сражался достойно(отстойно) =|. Но ты можешь попробовать еще раз.')
             }
-            console.log($btn);
 
         });
 
@@ -115,8 +113,6 @@ console.log(player2);
         player2.renderHP();
     }
     init();
-    console.log(player1);
-    console.log(player2);
 })
 
 

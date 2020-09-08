@@ -36,7 +36,6 @@ class Pokemon extends Selectors {
         const percent = current / ( total / 100 );
 
         let $health1 = document.getElementById('progressbar-player1');
-        console.log($health1);
         let $health2 = document.getElementById('progressbar-player2');
         let $healthStyle1 = document.getElementById('progressbar-player1').style.width;
         let percentNum1 = $healthStyle1.slice(0, 3);
@@ -45,8 +44,6 @@ class Pokemon extends Selectors {
         let percentNum2 = $healthStyle2.slice(0, 3);
         $healthStyle2 = Number(percentNum2);
 
-        console.log($healthStyle1);
-        console.log($healthStyle2);
         if ($healthStyle1 < 60 && $healthStyle1 > 20) {
             $health1.classList.add("low")
         } else if ($healthStyle1 < 20) {
@@ -56,9 +53,7 @@ class Pokemon extends Selectors {
             $health2.classList.add("low")
         } else if ($healthStyle2 < 20) {
             $health2.classList.add("critical")
-        }else if ($healthStyle2 > 60 || $healthStyle2 === NaN) {
-            $health2.classList.remove("low", "critical")
-        } ;;
+        }
         elProgressbar.style.width = percent + '%';
 
     }
